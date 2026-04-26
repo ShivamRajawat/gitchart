@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Essential Git Command Chart</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2331;
+    --bg4: #21262d;
+    --border: #30363d;
+    --border2: #3d444e;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --cyan: #39d0d8;
+    --lime: #a3e635;
+    --amber: #f0b429;
+    --coral: #ff6b6b;
+    --blue: #4fa3e3;
+    --purple: #bc8cff;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-left { flex: 1; min-width: 260px; }
+
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--cyan);
+  }
+
+  .header-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .header-title span {
+    color: var(--cyan);
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .badge-cyan  { background: rgba(57,208,216,.12); color: var(--cyan); border: 1px solid rgba(57,208,216,.25); }
+  .badge-lime  { background: rgba(163,230,53,.12);  color: var(--lime); border: 1px solid rgba(163,230,53,.25); }
+  .badge-amber { background: rgba(240,180,41,.12); color: var(--amber); border: 1px solid rgba(240,180,41,.25); }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* SECTION CARD */
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .icon-cyan   { background: rgba(57,208,216,.15); }
+  .icon-lime   { background: rgba(163,230,53,.15);  }
+  .icon-amber  { background: rgba(240,180,41,.15); }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .section-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+    font-family: var(--mono);
+  }
+
+  /* COMMAND ROWS */
+  .commands { padding: 12px 0; flex: 1; }
+
+  .cmd-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 0;
+    padding: 0 16px;
+    border-bottom: 1px solid transparent;
+    transition: background .12s;
+  }
+  .cmd-row:hover { background: var(--bg3); }
+  .cmd-row:not(:last-child) { border-bottom-color: rgba(48,54,61,.6); }
+
+  .cmd-cell {
+    padding: 9px 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+  }
+
+  .cmd-cell:first-child {
+    padding-right: 12px;
+    border-right: 1px solid var(--border);
+  }
+  .cmd-cell:last-child {
+    padding-left: 14px;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: var(--display);
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .cmd { color: var(--text); }
+  .arg { color: var(--cyan); }
+  .arg-lime { color: var(--lime); }
+  .arg-amber { color: var(--amber); }
+  .arg-coral { color: var(--coral); }
+  .arg-purple { color: var(--purple); }
+  .flag { color: var(--muted); }
+
+  /* GROUP LABEL */
+  .group-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    padding: 10px 20px 4px;
+    opacity: .6;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* SCAN LINE TEXTURE */
+  .page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.01) 2px, rgba(255,255,255,.01) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page { position: relative; z-index: 1; }
+
+  /* FULL-WIDTH SECTION */
+  .section-wide { grid-column: 1 / -1; }
+
+  .wide-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .wide-col { }
+  .wide-col:not(:last-child) { border-right: 1px solid var(--border); }
+
+  .wide-col-header {
+    padding: 10px 16px 8px;
+    font-size: 10px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (max-width: 720px) {
+    .wide-grid { grid-template-columns: 1fr; }
+    .wide-col:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  @media (max-width: 480px) {
+    .cmd-row { grid-template-columns: 1fr; }
+    .cmd-cell:first-child { border-right: none; border-bottom: 1px solid rgba(48,54,61,.6); padding-right: 4px; }
+    .cmd-cell:last-child { padding-left: 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">Version Control Reference</div>
+      <h1 class="header-title">The Essential<br><span>Git Command</span> Chart</h1>
+    </div>
+    <div class="header-meta">
+      <span class="badge badge-cyan">Git 2.x</span>
+      <span class="badge badge-lime">All Platforms</span>
+      <span class="badge badge-amber">Quick Reference</span>
+    </div>
+  </header>
+
+  <!-- SECTION GRID -->
+  <div class="grid">
+
+    <!-- ─── SECTION 1: SETUP & BASICS ─── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-cyan">⚙</div>
+        <div>
+          <div class="section-title">Setup &amp; Initialization</div>
+          <div class="section-sub">config · init · clone</div>
+        </div>
+      </div>
+      <div class="commands">
+        <div class="group-label">Identity</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git config --global</span> <span class="arg">&nbsp;user.name&nbsp;"<em>Name</em>"</span></div>
+          <div class="cmd-cell">Set global username</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git config --global</span> <span class="arg">&nbsp;user.email&nbsp;"<em>email</em>"</span></div>
+          <div class="cmd-cell">Set global email</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git config --list</span></div>
+          <div class="cmd-cell">View all config values</div>
+        </div>
+
+        <div class="group-label">Start a Repo</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git init</span></div>
+          <div class="cmd-cell">Init repo in current dir</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git init</span> <span class="arg-lime">&lt;folder&gt;</span></div>
+          <div class="cmd-cell">Init repo in new folder</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git clone</span> <span class="arg">&lt;url&gt;</span></div>
+          <div class="cmd-cell">Clone remote repo locally</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git clone</span> <span class="arg">&lt;url&gt;</span> <span class="arg-lime">&lt;dir&gt;</span></div>
+          <div class="cmd-cell">Clone into named folder</div>
+        </div>
+
+        <div class="group-label">Snapshot</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git status</span></div>
+          <div class="cmd-cell">Show working tree status</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git add</span> <span class="arg-lime">&lt;file&gt;</span></div>
+          <div class="cmd-cell">Stage specific file</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git add</span> <span class="arg-lime">.</span></div>
+          <div class="cmd-cell">Stage all changes</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git commit -m</span> <span class="arg">"<em>msg</em>"</span></div>
+          <div class="cmd-cell">Commit with message</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git commit --amend</span></div>
+          <div class="cmd-cell">Modify last commit</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git diff</span></div>
+          <div class="cmd-cell">Unstaged changes diff</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git diff --staged</span></div>
+          <div class="cmd-cell">Staged vs last commit</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git log --oneline</span></div>
+          <div class="cmd-cell">Compact commit history</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git log --graph</span></div>
+          <div class="cmd-cell">Visual branch history</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 2: BRANCHING & MERGING ─── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-lime">⎇</div>
+        <div>
+          <div class="section-title">Branching &amp; Merging</div>
+          <div class="section-sub">branch · merge · rebase</div>
+        </div>
+      </div>
+      <div class="commands">
+        <div class="group-label">Branch Management</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch</span></div>
+          <div class="cmd-cell">List local branches</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch -a</span></div>
+          <div class="cmd-cell">List all branches (incl. remote)</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch</span> <span class="arg-lime">&lt;name&gt;</span></div>
+          <div class="cmd-cell">Create new branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch -d</span> <span class="arg-lime">&lt;name&gt;</span></div>
+          <div class="cmd-cell">Delete merged branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch -D</span> <span class="arg-coral">&lt;name&gt;</span></div>
+          <div class="cmd-cell">Force delete branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git branch -m</span> <span class="arg-amber">&lt;old&gt;</span> <span class="arg-lime">&lt;new&gt;</span></div>
+          <div class="cmd-cell">Rename branch</div>
+        </div>
+
+        <div class="group-label">Switching</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git switch</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Switch to branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git switch -c</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Create &amp; switch branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git checkout</span> <span class="flag">--</span> <span class="arg-lime">&lt;file&gt;</span></div>
+          <div class="cmd-cell">Discard file changes</div>
+        </div>
+
+        <div class="group-label">Merge &amp; Rebase</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git merge</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Merge branch into current</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git merge --no-ff</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Merge with merge commit</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git merge --abort</span></div>
+          <div class="cmd-cell">Abort conflicted merge</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git rebase</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Rebase onto branch</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git rebase -i</span> <span class="arg-amber">HEAD~<em>N</em></span></div>
+          <div class="cmd-cell">Interactive rebase last N</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git cherry-pick</span> <span class="arg-purple">&lt;sha&gt;</span></div>
+          <div class="cmd-cell">Apply specific commit</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 3: REMOTE & ADVANCED ─── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-amber">☁</div>
+        <div>
+          <div class="section-title">Remote &amp; Advanced</div>
+          <div class="section-sub">remote · stash · reset · tags</div>
+        </div>
+      </div>
+      <div class="commands">
+        <div class="group-label">Remotes</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git remote -v</span></div>
+          <div class="cmd-cell">List remotes with URLs</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git remote add</span> <span class="arg-amber">&lt;name&gt;</span> <span class="arg">&lt;url&gt;</span></div>
+          <div class="cmd-cell">Add a new remote</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git fetch</span> <span class="arg-amber">&lt;remote&gt;</span></div>
+          <div class="cmd-cell">Fetch without merging</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git pull</span></div>
+          <div class="cmd-cell">Fetch &amp; merge (fast-forward)</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git pull --rebase</span></div>
+          <div class="cmd-cell">Fetch &amp; rebase local commits</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git push</span> <span class="arg-amber">&lt;remote&gt;</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Push branch to remote</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git push -u origin</span> <span class="arg-lime">&lt;branch&gt;</span></div>
+          <div class="cmd-cell">Push &amp; set upstream</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git push --force-with-lease</span></div>
+          <div class="cmd-cell">Safe force push</div>
+        </div>
+
+        <div class="group-label">Stash &amp; Clean</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git stash</span></div>
+          <div class="cmd-cell">Stash working changes</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git stash pop</span></div>
+          <div class="cmd-cell">Apply &amp; remove top stash</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git stash list</span></div>
+          <div class="cmd-cell">Show all stash entries</div>
+        </div>
+
+        <div class="group-label">Undo &amp; Reset</div>
+
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git revert</span> <span class="arg-purple">&lt;sha&gt;</span></div>
+          <div class="cmd-cell">New commit undoing SHA</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git reset --soft</span> <span class="arg-amber">HEAD~1</span></div>
+          <div class="cmd-cell">Undo commit, keep staged</div>
+        </div>
+        <div class="cmd-row">
+          <div class="cmd-cell"><span class="cmd">git reset --hard</span> <span class="arg-coral">HEAD~1</span></div>
+          <div class="cmd-cell">Undo commit &amp; discard changes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4: WIDE – SHORTCUTS & POWER TIPS ─── -->
+    <div class="section section-wide">
+      <div class="section-header" style="background: rgba(57,208,216,.04);">
+        <div class="section-icon" style="background: rgba(188,140,255,.15); font-size:15px;">✦</div>
+        <div>
+          <div class="section-title" style="color:var(--purple);">Power Commands &amp; Workflows</div>
+          <div class="section-sub">aliases · search · tags · reflog</div>
+        </div>
+      </div>
+      <div class="wide-grid">
+
+        <!-- COL A: Search & Inspect -->
+        <div class="wide-col">
+          <div class="wide-col-header">Search &amp; Inspect</div>
+          <div class="commands">
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git log --author=</span><span class="arg">"<em>name</em>"</span></div>
+              <div class="cmd-cell">Filter log by author</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git log --since=</span><span class="arg">"<em>1 week</em>"</span></div>
+              <div class="cmd-cell">Commits in time range</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git log</span> <span class="flag">-S</span> <span class="arg">"<em>string</em>"</span></div>
+              <div class="cmd-cell">Commits adding/removing string</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git grep</span> <span class="arg">"<em>pattern</em>"</span></div>
+              <div class="cmd-cell">Search working tree content</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git blame</span> <span class="arg-lime">&lt;file&gt;</span></div>
+              <div class="cmd-cell">Show who changed each line</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git show</span> <span class="arg-purple">&lt;sha&gt;</span></div>
+              <div class="cmd-cell">Inspect a specific commit</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL B: Tags & Reflog -->
+        <div class="wide-col">
+          <div class="wide-col-header">Tags &amp; Reflog</div>
+          <div class="commands">
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git tag</span></div>
+              <div class="cmd-cell">List all tags</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git tag</span> <span class="arg-lime">&lt;name&gt;</span></div>
+              <div class="cmd-cell">Create lightweight tag</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git tag -a</span> <span class="arg-lime">&lt;name&gt;</span> <span class="flag">-m</span> <span class="arg">"<em>msg</em>"</span></div>
+              <div class="cmd-cell">Create annotated tag</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git push origin</span> <span class="flag">--tags</span></div>
+              <div class="cmd-cell">Push all tags to remote</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git reflog</span></div>
+              <div class="cmd-cell">Full history incl. resets</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git bisect start</span></div>
+              <div class="cmd-cell">Binary search for bug commit</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL C: Helpful Aliases -->
+        <div class="wide-col">
+          <div class="wide-col-header">Useful Aliases</div>
+          <div class="commands">
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.co</span> <span class="arg-lime">checkout</span></div>
+              <div class="cmd-cell"><span class="arg-lime">co</span> = checkout</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.br</span> <span class="arg-lime">branch</span></div>
+              <div class="cmd-cell"><span class="arg-lime">br</span> = branch</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.st</span> <span class="arg-lime">status</span></div>
+              <div class="cmd-cell"><span class="arg-lime">st</span> = status</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.lg</span> <span class="arg">"log --oneline --graph"</span></div>
+              <div class="cmd-cell"><span class="arg-lime">lg</span> = visual log</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.undo</span> <span class="arg">"reset --soft HEAD~1"</span></div>
+              <div class="cmd-cell"><span class="arg-lime">undo</span> = soft reset</div>
+            </div>
+            <div class="cmd-row">
+              <div class="cmd-cell"><span class="cmd">git config --global alias.wip</span> <span class="arg">"!git add -A &amp;&amp; git commit -m WIP"</span></div>
+              <div class="cmd-cell"><span class="arg-lime">wip</span> = quick save commit</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- wide-grid -->
+    </div><!-- section-wide -->
+
+  </div><!-- grid -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--cyan)"></div>
+        <span style="color:var(--cyan); font-family:var(--mono); font-size:11px;">cyan</span>
+        <span style="color:var(--muted)"> = arg / value</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--lime)"></div>
+        <span style="color:var(--lime); font-family:var(--mono); font-size:11px;">lime</span>
+        <span style="color:var(--muted)"> = branch / file</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--amber)"></div>
+        <span style="color:var(--amber); font-family:var(--mono); font-size:11px;">amber</span>
+        <span style="color:var(--muted)"> = remote / ref</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--coral)"></div>
+        <span style="color:var(--coral); font-family:var(--mono); font-size:11px;">red</span>
+        <span style="color:var(--muted)"> = destructive</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--purple)"></div>
+        <span style="color:var(--purple); font-family:var(--mono); font-size:11px;">purple</span>
+        <span style="color:var(--muted)"> = SHA / commit</span>
+      </div>
+    </div>
+    <div class="footer-note">git version 2.x · &lt;angle brackets&gt; = replace with your value</div>
+  </footer>
+
+</div>
+</body>
+</html>
